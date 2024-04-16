@@ -1,5 +1,4 @@
 package client;
-import org.apache.jena.base.Sys;
 import source.JDBCClient;
 import source.Mediator;
 import data.Movie;
@@ -13,7 +12,7 @@ public class FacadeClient {
 
 		Mediator mediator = Mediator.getInstance();
 
-		String search = "Ava";
+		String search = "Raise the Titanic";
 		boolean caseSensitive = true;
 
 		ArrayList<Movie> movies = mediator.getMoviesByMovieTitle(search, caseSensitive);

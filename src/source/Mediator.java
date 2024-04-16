@@ -74,6 +74,11 @@ public class Mediator {
 
         /******************** OMDb API Part *****************************************************/
         // OMDb API Part
+        for(Movie movie : movies) {
+        	String movieTitleFormatted = movie.getTitle().replace(' ', '+');
+        	String plot = OMDbClient.getMovieResume(movieTitleFormatted);
+        	movie.setSummary(plot);
+        }
 
         return movies;
     }
