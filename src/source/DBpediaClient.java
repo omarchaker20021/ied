@@ -88,7 +88,6 @@ public class DBpediaClient {
         ArrayList<String> directors = executeQueryAndGetResults(queryStringDirectors);
         ArrayList<String> actors = executeQueryAndGetResults(queryStringActors);
         ArrayList<String> producers = executeQueryAndGetResults(queryStringProducers);
-
         // Ajouter les détails du film à la liste
         moviesDetails.add(actors);
         moviesDetails.add(directors);
@@ -96,6 +95,39 @@ public class DBpediaClient {
 
         return moviesDetails;
     }
+    public static ArrayList<String> getMoviesByActor(String actorName, boolean caseSensitive) {
+
+        // Construire la requête SPARQL pour récupérer les films selon l'acteur
+        String queryStringActorMovies = "PREFIX dbo: <http://dbpedia.org/ontology/>\n"
+        		+ "PREFIX dbp: <http://dbpedia.org/property/>\n"
+                + "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+                + "SELECT DISTINCT ?value WHERE {\n"
+                + "  ?film a dbo:Film .\n"
+                + "{\n"
+                + "  ?film dbo:starring|dbp:starring ?actor .\n"
+                + "} UNION {\n"
+                + "  ?film dbo:starring|dbp:starring ?a .\n"
+                + "  ?a foaf:name|rdfs:label ?actor.\n"
+                + "}\n";
+        if (caseSensitive) {
+            queryStringActorMovies += "FILTER (LCASE(str(?actor)) = \"" + actorName.toLowerCase() + "\"";
+        } else {
+            queryStringActorMovies += "FILTER (str(?actor) = \"" + actorName + "\"@en";
+        }
+        queryStringActorMovies += ")\n"
+//                + "?film rdfs:label ?filmTitle .\n"
+				+ "?film foaf:name ?filmTitle .\n"
+                + "  FILTER (lang(?filmTitle) = 'en')\n"
+                + "BIND (STR(?filmTitle) AS ?value)\n"
+                + "}";
+        System.out.println(queryStringActorMovies);
+        // Exécuter la requête SPARQL et récupérer les résultats
+        ArrayList<String> actorMovies = executeQueryAndGetResults(queryStringActorMovies);
+        
+        return actorMovies;
+    }
+
 
     // Méthode pour exécuter une requête SPARQL et retourner les résultats sous forme de liste de chaînes de caractères
     private static ArrayList<String> executeQueryAndGetResults(String queryString) {
@@ -124,6 +156,11 @@ public class DBpediaClient {
 
         return resultsList;
     }
+
+	public static ArrayList<String> getActorMovies(String actorName, boolean caseSensitive) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
 }

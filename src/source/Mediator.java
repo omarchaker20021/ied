@@ -5,6 +5,8 @@ import data.Movie;
 import java.sql.Date;
 import java.util.ArrayList;
 
+import org.apache.jena.rdfxml.xmlinput.ALiteral;
+
 public class Mediator {
 
     // Eager Singleton
@@ -81,6 +83,18 @@ public class Mediator {
         }
 
         return movies;
+    }
+    public ArrayList<Movie> getMoviesByActorName(String actorName, boolean caseSensitive){
+
+        ArrayList<Movie> movies = new ArrayList<>();
+        ArrayList<String> moviesTitle = DBpediaClient.getMoviesByActor(actorName, caseSensitive);
+        
+        for(String movieTitle :moviesTitle) {
+        	movies.addAll(getMoviesByMovieTitle(movieTitle, caseSensitive));
+        }
+        return movies;
+        
+       
     }
 
 }

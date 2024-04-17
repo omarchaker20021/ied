@@ -52,7 +52,7 @@ public class JDBCClient {
         Statement statement = createStatement(this.connection);
 
         String query = "SELECT * FROM film" +
-                " WHERE film.title LIKE \'%" + search +"%\' ";
+                " WHERE film.title LIKE \"%" + search +"%\" ";
 
         ArrayList<ArrayList<Object>> filmsTable = new ArrayList<>();
         try {

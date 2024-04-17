@@ -12,18 +12,29 @@ public class FacadeClient {
 
 		Mediator mediator = Mediator.getInstance();
 
-		String search = "Raise the Titanic";
+		String searchMovie = "Avatar";
+		String searchActor = "Matt Lattanzi";
 		boolean caseSensitive = true;
 
-		ArrayList<Movie> movies = mediator.getMoviesByMovieTitle(search, caseSensitive);
+//		ArrayList<Movie> moviesByTitle = mediator.getMoviesByMovieTitle(searchMovie, caseSensitive);
+//		ArrayList<Movie> moviesByActor = mediator.getMoviesByActorName(searchActor, caseSensitive);
+		ArrayList<Movie> moviesByActor = mediator.getMoviesByActorName(searchActor, caseSensitive);
 
-		for (Movie movie : movies){
+//		System.out.println("Movies by title:");
+//		for (Movie movie : moviesByTitle){
+//			System.out.println(movie);
+//			System.out.println("");
+//			System.out.println("--------------------------------------------------------------------------------------------");
+//			System.out.println("");
+//		}
+
+		System.out.println("Movies by actor:");
+		for (Movie movie : moviesByActor){
 			System.out.println(movie);
 			System.out.println("");
 			System.out.println("--------------------------------------------------------------------------------------------");
 			System.out.println("");
 		}
-
 
 	}
 
