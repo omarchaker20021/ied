@@ -4,6 +4,8 @@ import data.Movie;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.apache.jena.rdfxml.xmlinput.ALiteral;
 
@@ -48,6 +50,8 @@ public class Mediator {
 
         }
 
+        // Pour cette partie je vais extraire l'année de sortie d'un Film avec son nom et les mettre en commun pour la
+        // exacte dans SPARQL
 
 
         /******************** DBpedia Part *****************************************************/
@@ -55,19 +59,25 @@ public class Mediator {
         // With movies I'm gonna extract actors, directors, producers
         for (Movie movie : movies){
             String filmTitle = movie.getTitle();
+            // Pour cette partie je vais extraire l'année de sortie d'un Film avec son nom et les mettre en
+            // commun pour la exacte dans SPARQL
+            String releaseYear = "" + (movie.getReleaseDate().getYear() + 1900) + "";
+
+            String filmLabel = DBpediaClient.getMovie(filmTitle, releaseYear, caseSensitive);
+
             // Case sensitive research or not
-            ArrayList<ArrayList<String>> moviesDetails = DBpediaClient.getMoviesDetails(filmTitle, caseSensitive);
-            ArrayList<String> actors = moviesDetails.get(0);
-            ArrayList<String> directors = moviesDetails.get(1);
-            ArrayList<String> producers = moviesDetails.get(2);
+            ArrayList<ArrayList<Object>> moviesDetails = DBpediaClient.getMoviesDetails(filmLabel/*, caseSensitive*/);
+            ArrayList<Object> actors = moviesDetails.get(0);
+            ArrayList<Object> directors = moviesDetails.get(1);
+            ArrayList<Object> producers = moviesDetails.get(2);
             if (actors.size() > 0){
-                movie.setActors(actors);
+                movie.addActors(actors);
             }
             if (directors.size() > 0){
-                movie.setDirectors(directors);
+                movie.addDirectors(directors);
             }
             if (producers.size() > 0){
-                movie.setProducers(moviesDetails.get(2));
+                movie.addProducers(producers);
             }
         }
 
@@ -86,12 +96,103 @@ public class Mediator {
     }
     public ArrayList<Movie> getMoviesByActorName(String actorName, boolean caseSensitive){
 
-        ArrayList<Movie> movies = new ArrayList<>();
-        ArrayList<String> moviesTitle = DBpediaClient.getMoviesByActor(actorName, caseSensitive);
-        
-        for(String movieTitle :moviesTitle) {
-        	movies.addAll(getMoviesByMovieTitle(movieTitle, caseSensitive));
+        ArrayList<Movie> movies = new ArrayList<Movie>();
+        HashMap<String, Movie> moviesByLabels = new HashMap();
+
+        // On récupère les films de l'acteur renseigné
+        ArrayList<Object> moviesLabels = DBpediaClient.getMoviesByActor(actorName, caseSensitive, true);
+
+
+        /******************** JDBC Part *****************************************************/
+
+
+
+        // Ararylist des films qui n'existent pas
+        ArrayList<Object> notFoundMoviesLabels = new ArrayList<>();
+
+        // On croise les films sql avec les films dpbedia
+        for(Object movieLabel : moviesLabels) {
+            JDBCClient jdbcClient = new JDBCClient();
+            String movieTitle = ((String[])movieLabel)[0].split("\\(")[0].trim();
+            ArrayList<ArrayList<Object>> filmsTable = jdbcClient.getMovieInfo(movieTitle);
+            if(!filmsTable.isEmpty()){
+                for (ArrayList<Object> filmTable : filmsTable){
+                    Movie movie = new Movie();
+
+                    // Pour cette partie je vais extraire l'année de sortie d'un Film avec son nom et les mettre en
+                    // commun pour la exacte dans SPARQL
+                    String releaseYearSql = "" + (((Date)filmTable.get(1)).getYear() + 1900) + "";
+                    String releaseYearDbpedia = ((String[])movieLabel)[1];
+                    if (releaseYearDbpedia.equals(releaseYearSql)){
+                        movie.setTitle((String)filmTable.get(0));
+                        movie.setReleaseDate((Date)filmTable.get(1));
+                        movie.setGenre((String)filmTable.get(2));
+                        movie.setDistributor((String)filmTable.get(3));
+                        movie.setBudget((double)filmTable.get(4));
+                        movie.setUsaRevenue((double)filmTable.get(5));
+                        movie.setWorldwideRevenue((double)filmTable.get(6));
+
+                        moviesByLabels.put(((String[])movieLabel)[0], movie);
+                    }
+
+
+                }
+            }
+            else {
+                notFoundMoviesLabels.add(movieLabel);
+            }
+
         }
+
+        moviesLabels.removeAll(notFoundMoviesLabels);
+        // Affichage des labels inexistants dans la bd sql
+        System.out.println("Films de"+ actorName +" non trouvés :\n" + notFoundMoviesLabels);
+
+        // Pour cette partie je vais extraire l'année de sortie d'un Film avec son nom et les mettre en commun pour la
+        // exacte dans SPARQL
+
+
+        /******************** DBpedia Part *****************************************************/
+        // DBPedia Part
+        // With movies I'm gonna extract actors, directors, producers
+        for (Entry<String, Movie> movieByLabel : moviesByLabels.entrySet()){
+//            String filmTitle = movie.getTitle();
+            // Pour cette partie je vais extraire l'année de sortie d'un Film avec son nom et les mettre en
+            // commun pour la exacte dans SPARQL
+//            String releaseYear = "" + (movie.getReleaseDate().getYear() + 1900) + "";
+//
+            String filmLabel = movieByLabel.getKey();
+            Movie movie = movieByLabel.getValue();
+
+            // Case sensitive research or not
+            ArrayList<ArrayList<Object>> moviesDetails = DBpediaClient.getMoviesDetails(filmLabel/*, caseSensitive*/);
+            ArrayList<Object> actors = moviesDetails.get(0);
+            ArrayList<Object> directors = moviesDetails.get(1);
+            ArrayList<Object> producers = moviesDetails.get(2);
+            if (actors.size() > 0){
+                movie.addActors(actors);
+            }
+            if (directors.size() > 0){
+                movie.addDirectors(directors);
+            }
+            if (producers.size() > 0){
+                movie.addProducers(producers);
+            }
+
+            // Transfert des données
+            movies.add(movie);
+
+        }
+
+
+        /******************** OMDb API Part *****************************************************/
+        // OMDb API Part
+        for(Movie movie : movies) {
+            String movieTitleFormatted = movie.getTitle().replace(' ', '+');
+            String plot = OMDbClient.getMovieResume(movieTitleFormatted);
+            movie.setSummary(plot);
+        }
+
         return movies;
         
        

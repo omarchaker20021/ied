@@ -94,12 +94,22 @@ public class Movie {
         this.directors = directors;
     }
 
+    public void addDirectors(ArrayList<Object> directors) {
+        for (Object director : directors){
+            this.directors.add((String)director);
+        }
+    }
     public ArrayList<String> getActors() {
         return actors;
     }
 
     public void setActors(ArrayList<String> actors) {
         this.actors = actors;
+    }
+    public void addActors(ArrayList<Object> actors) {
+        for (Object actor : actors){
+            this.actors.add((String)actor);
+        }
     }
 
     public ArrayList<String> getProducers() {
@@ -108,6 +118,11 @@ public class Movie {
 
     public void setProducers(ArrayList<String> producers) {
         this.producers = producers;
+    }
+    public void addProducers(ArrayList<Object> producers) {
+        for (Object producer : producers){
+            this.producers.add((String)producer);
+        }
     }
 
     public String getSummary() {

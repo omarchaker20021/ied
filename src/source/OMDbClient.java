@@ -17,7 +17,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 public class OMDbClient {
-	public static final  String API_KEY = "aabeafb9";
+	public static final  String API_KEY = "e09f3ff1";
 	
 	private static StringBuilder getResponse(String movieTitle) {
 		StringBuilder response = null;

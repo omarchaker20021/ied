@@ -69,28 +69,30 @@ public class FacadeClient{
                 String search = inputField.getText();
                 boolean caseSensitive = true;
                 ArrayList<Movie> movies = new ArrayList<>();
-                if (searchOptions.getSelectedIndex() == 0) {
-                    movies = mediator.getMoviesByMovieTitle(search, caseSensitive);
-                } else {
-                    movies = mediator.getMoviesByActorName(search, caseSensitive);
-                }
+                if(search != null && !search.equals("")){
+                    if (searchOptions.getSelectedIndex() == 0) {
+                        movies = mediator.getMoviesByMovieTitle(search, caseSensitive);
+                    } else {
+                        movies = mediator.getMoviesByActorName(search, caseSensitive);
+                    }
 
-                tableModel.setRowCount(0); // Clear previous rows
-                for (Movie movie : movies) {
-                    Object[] rowData = {
-                            movie.getTitle(),
-                            movie.getReleaseDate(),
-                            movie.getGenre(),
-                            movie.getDistributor(),
-                            movie.getBudget(),
-                            movie.getUsaRevenue(),
-                            movie.getWorldwideRevenue(),
-                            movie.getDirectors(),
-                            movie.getActors(),
-                            movie.getProducers(),
-                            movie.getSummary()
-                    };
-                    tableModel.addRow(rowData);
+                    tableModel.setRowCount(0); // Clear previous rows
+                    for (Movie movie : movies) {
+                        Object[] rowData = {
+                                movie.getTitle(),
+                                movie.getReleaseDate(),
+                                movie.getGenre(),
+                                movie.getDistributor(),
+                                movie.getBudget(),
+                                movie.getUsaRevenue(),
+                                movie.getWorldwideRevenue(),
+                                movie.getDirectors(),
+                                movie.getActors(),
+                                movie.getProducers(),
+                                movie.getSummary()
+                        };
+                        tableModel.addRow(rowData);
+                    }
                 }
             }
         });
