@@ -82,13 +82,12 @@ public class Mediator {
         }
 
 
-
-
         /******************** OMDb API Part *****************************************************/
         // OMDb API Part
         for(Movie movie : movies) {
         	String movieTitleFormatted = movie.getTitle().replace(' ', '+');
-        	String plot = OMDbClient.getMovieResume(movieTitleFormatted);
+            String releaseYear = "" + (movie.getReleaseDate().getYear() + 1900) + "";
+        	String plot = OMDbClient.getMovieResume(movieTitleFormatted, releaseYear);
         	movie.setSummary(plot);
         }
 
@@ -104,7 +103,6 @@ public class Mediator {
 
 
         /******************** JDBC Part *****************************************************/
-
 
 
         // Ararylist des films qui n'existent pas
@@ -160,7 +158,7 @@ public class Mediator {
             // Pour cette partie je vais extraire l'année de sortie d'un Film avec son nom et les mettre en
             // commun pour la exacte dans SPARQL
 //            String releaseYear = "" + (movie.getReleaseDate().getYear() + 1900) + "";
-//
+
             String filmLabel = movieByLabel.getKey();
             Movie movie = movieByLabel.getValue();
 
@@ -189,7 +187,8 @@ public class Mediator {
         // OMDb API Part
         for(Movie movie : movies) {
             String movieTitleFormatted = movie.getTitle().replace(' ', '+');
-            String plot = OMDbClient.getMovieResume(movieTitleFormatted);
+            String releaseYear = "" + (movie.getReleaseDate().getYear() + 1900) + "";
+            String plot = OMDbClient.getMovieResume(movieTitleFormatted, releaseYear);
             movie.setSummary(plot);
         }
 

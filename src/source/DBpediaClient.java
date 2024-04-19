@@ -124,6 +124,7 @@ public class DBpediaClient {
         } else {
             queryStringActorMovies += "FILTER (str(?actor) = \"" + actorName + "\"@en";
         }
+
         queryStringActorMovies += ")\n"
                 + "?film rdfs:label ?filmLabel .\n"
 //				+ "?film foaf:name ?filmTitle .\n"
@@ -152,10 +153,23 @@ public class DBpediaClient {
 
         if (caseSensitive) {
             queryStringMovie += "    foaf:name ?filmName.\n"
-                    + "FILTER (LCASE(str(?filmName)) = \"" + movieTitle.toLowerCase() + "\")\n";
+                    + "FILTER (LCASE(str(?filmName)) = \"" + movieTitle.toLowerCase() + "\")\n"
+                    + "FILTER (CONTAINS(LCASE(?label), \"" + movieTitle.toLowerCase() + "\"))\n";
+
         } else {
             queryStringMovie += "    foaf:name \"" + movieTitle + "\"@en.\n";
         }
+
+//        if (caseSensitive) {
+//            queryStringMovie += "    rdfs:label ?label.\n"
+////                    + "FILTER (LCASE(str(?filmName)) = \"" + movieTitle.toLowerCase() + "\")\n"
+//                    + "FILTER (CONTAINS(LCASE(?label), \"" + movieTitle.toLowerCase() + "\"))\n";
+//
+//        } else {
+//            queryStringMovie += "    foaf:name \"" + movieTitle + "\"@en.\n";
+//        }
+
+
         queryStringMovie += "    FILTER (lang(?comment) = 'en') \n"
                 + "    FILTER (lang(?label) = 'en') \n"
                 + "    BIND (STR(?label) AS ?labelValue)\n"

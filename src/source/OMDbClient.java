@@ -19,11 +19,11 @@ import org.xml.sax.InputSource;
 public class OMDbClient {
 	public static final  String API_KEY = "e09f3ff1";
 	
-	private static StringBuilder getResponse(String movieTitle) {
+	private static StringBuilder getResponse(String movieTitle, String year) {
 		StringBuilder response = null;
         try {
             // Effectuer la requête HTTP GET vers l'API OMDb
-            URL url = new URL("http://www.omdbapi.com/?t=" + movieTitle + "&apikey=" + API_KEY + "&r=xml");
+            URL url = new URL("http://www.omdbapi.com/?t=" + movieTitle + "&y=" + year + "&apikey=" + API_KEY + "&r=xml");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -59,8 +59,8 @@ public class OMDbClient {
 		}
         return plot;   
 	}
-	public static String getMovieResume(String movieTitle) {
-		StringBuilder response = getResponse(movieTitle);
+	public static String getMovieResume(String movieTitle, String year) {
+		StringBuilder response = getResponse(movieTitle, year);
 		String plot = evaluateXPathExpression(response);
 		return plot;
 	}
