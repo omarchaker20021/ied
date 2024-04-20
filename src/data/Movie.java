@@ -34,12 +34,20 @@ public class Movie {
         return title;
     }
 
+
+    public String getStringTitle(){
+        return "<html>\n<p>" + title + "</p>\n</html>";
+    }
     public void setTitle(String title) {
         this.title = title;
     }
 
     public Date getReleaseDate() {
         return releaseDate;
+    }
+
+    public String getStringReleaseDate(){
+        return "<html>\n<p>" + releaseDate + "</p>\n</html>";
     }
 
     public void setReleaseDate(Date releaseDate) {
@@ -50,12 +58,20 @@ public class Movie {
         return genre;
     }
 
+
+    public String getStringGenre(){
+        return "<html>\n<p>" + genre + "</p>\n</html>";
+    }
     public void setGenre(String genre) {
         this.genre = genre;
     }
 
     public String getDistributor() {
         return distributor;
+    }
+
+    public String getStringDistributor(){
+        return "<html>\n<p>" + distributor + "</p>\n</html>";
     }
 
     public void setDistributor(String distributor) {
@@ -66,6 +82,10 @@ public class Movie {
         return budget;
     }
 
+    public String getStringBudget(){
+        return "<html>\n<p>" + String.format("%.0f", budget) + "$</p>\n</html>";
+    }
+
     public void setBudget(double budget) {
         this.budget = budget;
     }
@@ -74,14 +94,21 @@ public class Movie {
         return usaRevenue;
     }
 
+    public String getStringUsaRevenue(){
+        return "<html>\n<p>" + String.format("%.0f", usaRevenue) + "$</p>\n</html>";
+    }
+
     public void setUsaRevenue(double usaRevenue) {
         this.usaRevenue = usaRevenue;
     }
-
     public double getWorldwideRevenue() {
         return worldwideRevenue;
     }
 
+
+    public String getStringWorldwideRevenue(){
+        return "<html>\n<p>" + String.format("%.0f", worldwideRevenue) + "$</p>\n</html>";
+    }
     public void setWorldwideRevenue(double worldwideRevenue) {
         this.worldwideRevenue = worldwideRevenue;
     }
@@ -90,17 +117,55 @@ public class Movie {
         return directors;
     }
 
+    public String getStringHTMLDirectors(){
+        if(!this.directors.isEmpty()){
+
+            // Convertir l'ArrayList en une chaîne de caractères
+            StringBuilder sb = new StringBuilder();
+            sb.append("<html>\n");
+            for (String element : this.directors) {
+                sb.append("<p>\n").append(element).append("</p>\n");
+            }
+            // Supprimer la virgule et l'espace supplémentaires à la fin
+            sb.substring(0, sb.length() - 2);
+            sb.append("</html>\n");
+            String arrayAsString = sb.toString();
+            return arrayAsString;
+        }
+        return "";
+    }
     public void setDirectors(ArrayList<String> directors) {
         this.directors = directors;
     }
 
     public void addDirectors(ArrayList<Object> directors) {
         for (Object director : directors){
-            this.directors.add((String)director);
+            String directorName = ((String)director).split("\\(")[0].trim();
+            if (!this.directors.contains(directorName)){
+                this.directors.add(directorName);
+            }
         }
     }
     public ArrayList<String> getActors() {
         return actors;
+    }
+
+    public String getStringHTMLActors(){
+        if(!this.directors.isEmpty()){
+
+            // Convertir l'ArrayList en une chaîne de caractères
+            StringBuilder sb = new StringBuilder();
+            sb.append("<html>\n");
+            for (String element : this.actors) {
+                sb.append("<p>\n").append(element).append("</p>\n");
+            }
+            // Supprimer la virgule et l'espace supplémentaires à la fin
+            sb.substring(0, sb.length() - 2);
+            sb.append("</html>\n");
+            String arrayAsString = sb.toString();
+            return arrayAsString;
+        }
+        return "";
     }
 
     public void setActors(ArrayList<String> actors) {
@@ -108,7 +173,10 @@ public class Movie {
     }
     public void addActors(ArrayList<Object> actors) {
         for (Object actor : actors){
-            this.actors.add((String)actor);
+            String actorName = ((String)actor).split("\\(")[0].trim();
+            if (!this.actors.contains(actorName)){
+                this.actors.add(actorName);
+            }
         }
     }
 
@@ -116,12 +184,35 @@ public class Movie {
         return producers;
     }
 
+
+    public String getStringHTMLProducers(){
+        if(!this.directors.isEmpty()){
+
+            // Convertir l'ArrayList en une chaîne de caractères
+            StringBuilder sb = new StringBuilder();
+            sb.append("<html>\n");
+            for (String element : this.producers) {
+                sb.append("<p>\n").append(element).append("</p>\n");
+            }
+
+
+            // Supprimer la virgule et l'espace supplémentaires à la fin
+            sb.substring(0, sb.length() - 2);
+            sb.append("</html>\n");
+            String arrayAsString = sb.toString();
+            return arrayAsString;
+        }
+        return "";
+    }
     public void setProducers(ArrayList<String> producers) {
         this.producers = producers;
     }
     public void addProducers(ArrayList<Object> producers) {
         for (Object producer : producers){
-            this.producers.add((String)producer);
+            String producerName = ((String)producer).split("\\(")[0].trim();
+            if (!this.producers.contains(producerName)){
+                this.producers.add(producerName);
+            }
         }
     }
 
@@ -151,11 +242,11 @@ public class Movie {
                         "+----------------------------------------+----------------------------------------------------+\n" +
                         "| Worldwide Revenue                      | %50.2f |\n" +
                         "+----------------------------------------+----------------------------------------------------+\n" +
-                        "| Director                               | %50s |\n" +
+                        "| Directors                              | %50s |\n" +
                         "+----------------------------------------+----------------------------------------------------+\n" +
-                        "| Actor                                  | %50s |\n" +
+                        "| Actors                                 | %50s |\n" +
                         "+----------------------------------------+----------------------------------------------------+\n" +
-                        "| Producer                               | %50s |\n" +
+                        "| Producers                              | %50s |\n" +
                         "+----------------------------------------+----------------------------------------------------+\n" +
                         "| Summary                                | %50s |\n" +
                         "+----------------------------------------+----------------------------------------------------+",

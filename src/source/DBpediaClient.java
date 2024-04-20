@@ -5,7 +5,7 @@ import org.apache.jena.rdf.model.RDFNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,9 +30,17 @@ public class DBpediaClient {
 //        }
 
 
-        queryStringDirectors +="    rdfs:label\"" + movieLabel + "\"@en.\n"
-                + "  ?film dbo:director|dbp:director ?d .\n"
+        queryStringDirectors +="{"
+                + "    ?film rdfs:label \"" + movieLabel + "\"@en.\n"
+                + "} UNION {"
+                + "    ?film rdfs:label \"" + movieLabel + "\"@fr.\n"
+                + "}"
+                + "{"
+                + "  ?film dbo:director|dbp:director|dbo:directors|dbp:directors ?d .\n"
                 + "  ?d foaf:name|rdfs:label|dbp:name ?directorName .\n"
+                + "} UNION {"
+                + "  ?film dbo:director|dbp:director|dbo:directors|dbp:directors ?directorName .\n"
+                + "}"
                 + "  FILTER (lang(?directorName) = 'en')\n"
                 + "BIND (STR(?directorName) AS ?value)\n"
                 + "}";
@@ -54,9 +62,17 @@ public class DBpediaClient {
 //        else {
 //            queryStringActors +="    rdfs:label \"" + movieLabel + "\"@en.\n";
 //        }
-        queryStringActors+= "    rdfs:label\"" + movieLabel + "\"@en.\n"
+        queryStringActors+= "{"
+                + "    ?film rdfs:label \"" + movieLabel + "\"@en.\n"
+                + "} UNION {"
+                + "    ?film rdfs:label \"" + movieLabel + "\"@fr.\n"
+                + "}"
+                + "{"
                 + "  ?film dbo:starring|dbp:starring ?a .\n"
                 + "  ?a foaf:name|rdfs:label|dbp:name ?actorName .\n"
+                + "} UNION {"
+                + "  ?film dbo:starring|dbp:starring ?actorName .\n"
+                + "}"
                 + "  FILTER (lang(?actorName) = 'en')\n"
                 + "BIND (STR(?actorName) AS ?value)\n"
                 + "}";
@@ -69,7 +85,7 @@ public class DBpediaClient {
                 + "PREFIX dbp: <http://dbpedia.org/property/>\n"
                 + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
                 + "SELECT DISTINCT ?value WHERE {\n"
-                + "  ?film a dbo:Film ;\n";
+                + "  ?film a dbo:Film .\n";
 //        if (caseSensitive){
 //            queryStringProducers +="    rdfs:label ?filmName.\n"
 //                    + "FILTER (LCASE(str(?filmName)) = \"" + movieLabel.toLowerCase() + "\")\n";
@@ -77,7 +93,11 @@ public class DBpediaClient {
 //        else {
 //            queryStringProducers +="    rdfs:label \"" + movieLabel + "\"@en.\n";
 //        }
-        queryStringProducers+= "    rdfs:label\"" + movieLabel + "\"@en.\n"
+        queryStringProducers+= "{"
+                + "    ?film rdfs:label \"" + movieLabel + "\"@en.\n"
+                + "} UNION {"
+                + "    ?film rdfs:label \"" + movieLabel + "\"@fr.\n"
+                + "}"
                 + "{"
                 + "    ?film dbp:producers|dbo:producers|dbp:producer|dbo:producer ?producerName .\n"
                 + "} UNION {"
@@ -89,13 +109,17 @@ public class DBpediaClient {
                 + "}";
 
         System.out.println(queryStringActors);
-//        System.out.println(queryStringDirectors);
-//        System.out.println(queryStringProducers);
+        System.out.println(queryStringDirectors);
+        System.out.println(queryStringProducers);
 
         // Exécuter les requêtes SPARQL et récupérer les résultats
         ArrayList<Object> directors = executeQueryAndGetResults(queryStringDirectors, false);
         ArrayList<Object> actors = executeQueryAndGetResults(queryStringActors, false);
         ArrayList<Object> producers = executeQueryAndGetResults(queryStringProducers, false);
+
+
+
+
         // Ajouter les détails du film à la liste
         moviesDetails.add(actors);
         moviesDetails.add(directors);
@@ -128,7 +152,7 @@ public class DBpediaClient {
         queryStringActorMovies += ")\n"
                 + "?film rdfs:label ?filmLabel .\n"
 //				+ "?film foaf:name ?filmTitle .\n"
-                + "  FILTER (lang(?filmLabel) = 'en')\n"
+                + "  FILTER ((lang(?filmLabel) = 'en') || (lang(?filmLabel) = 'fr'))\n"
                 + "  FILTER (lang(?comment) = 'en')\n"
                 + "BIND (STR(?filmLabel) AS ?value)\n"
                 + "}";
@@ -149,12 +173,12 @@ public class DBpediaClient {
                 + "SELECT DISTINCT ?comment ?labelValue WHERE {\n"
                 + "  ?film a dbo:Film ;\n"
                 + "    rdfs:comment ?comment ;\n"
-                + "    rdfs:label ?label ;\n";
+                + "    rdfs:label ?label .\n";
 
         if (caseSensitive) {
-            queryStringMovie += "    foaf:name ?filmName.\n"
+            queryStringMovie += /*"    foaf:name ?filmName.\n"
                     + "FILTER (LCASE(str(?filmName)) = \"" + movieTitle.toLowerCase() + "\")\n"
-                    + "FILTER (CONTAINS(LCASE(?label), \"" + movieTitle.toLowerCase() + "\"))\n";
+                    + */"FILTER (CONTAINS(LCASE(?label), \"" + movieTitle.toLowerCase() + "\"))\n";
 
         } else {
             queryStringMovie += "    foaf:name \"" + movieTitle + "\"@en.\n";
@@ -171,7 +195,7 @@ public class DBpediaClient {
 
 
         queryStringMovie += "    FILTER (lang(?comment) = 'en') \n"
-                + "    FILTER (lang(?label) = 'en') \n"
+                + "    FILTER ((lang(?label) = 'en') || (lang(?label) = 'fr')) \n"
                 + "    BIND (STR(?label) AS ?labelValue)\n"
                 + "}";
 
@@ -204,7 +228,11 @@ public class DBpediaClient {
         }
 
         // Afficher les détails du film à la liste
-        for (Map.Entry<String, String> entry : movieSummary.entrySet()) {
+        if(movieSummary.entrySet().size() == 1){
+            return movieSummary.entrySet().iterator().next().getKey();
+        }
+
+        for (Entry<String, String> entry : movieSummary.entrySet()) {
 //            System.out.println(entry);
 
             // Création du motif pour matcher une année
@@ -215,7 +243,11 @@ public class DBpediaClient {
             if (matcher.find()) {
 //                System.out.println("La première année trouvée est : " + matcher.group());
                 if (matcher.group().equals(year)) {
-                    return entry.getKey();
+                    String searchedMovieTitle = entry.getKey().split("\\(")[0].trim();
+                    String[] words = searchedMovieTitle.split("\\s+");
+                    String[] wordsSearch = movieTitle.split("\\s+");
+                    if (words.length == wordsSearch.length)
+                        return entry.getKey();
                 }
             } else {
                 System.out.println("Aucune année trouvée dans le texte.");

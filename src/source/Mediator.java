@@ -67,9 +67,20 @@ public class Mediator {
 
             // Case sensitive research or not
             ArrayList<ArrayList<Object>> moviesDetails = DBpediaClient.getMoviesDetails(filmLabel/*, caseSensitive*/);
+            if (moviesDetails.get(0).size() == 0 && moviesDetails.get(1).size() == 0 && moviesDetails.get(2).size() == 0){
+                // Traitement des cas spéciaux
+                if (filmTitle.toLowerCase().contains("the")){
+                    filmTitle = filmTitle.replace("the", "").replace("The", "").trim();
+
+                    filmLabel = DBpediaClient.getMovie(filmTitle, releaseYear, caseSensitive);
+                    moviesDetails = DBpediaClient.getMoviesDetails(filmLabel/*, caseSensitive*/);
+                }
+
+            }
             ArrayList<Object> actors = moviesDetails.get(0);
             ArrayList<Object> directors = moviesDetails.get(1);
             ArrayList<Object> producers = moviesDetails.get(2);
+
             if (actors.size() > 0){
                 movie.addActors(actors);
             }
@@ -87,7 +98,14 @@ public class Mediator {
         for(Movie movie : movies) {
         	String movieTitleFormatted = movie.getTitle().replace(' ', '+');
             String releaseYear = "" + (movie.getReleaseDate().getYear() + 1900) + "";
-        	String plot = OMDbClient.getMovieResume(movieTitleFormatted, releaseYear);
+            String plot = OMDbClient.getMovieResume(movieTitleFormatted, releaseYear);
+            if (plot == null || plot.equals("<html>\n<p></p>\n</html>")){
+                if (movieTitleFormatted.toLowerCase().contains("the")){
+                    movieTitleFormatted = movieTitleFormatted.replace("the", "").replace("The", "").trim();
+                    plot = OMDbClient.getMovieResume(movieTitleFormatted, releaseYear);
+                }
+            }
+
         	movie.setSummary(plot);
         }
 
@@ -164,6 +182,16 @@ public class Mediator {
 
             // Case sensitive research or not
             ArrayList<ArrayList<Object>> moviesDetails = DBpediaClient.getMoviesDetails(filmLabel/*, caseSensitive*/);
+//            if (moviesDetails.get(0).size() == 0 && moviesDetails.get(1).size() == 0 && moviesDetails.get(2).size() == 0){
+//                // Traitement des cas spéciaux
+//                if (filmTitle.toLowerCase().contains("the")){
+//                    filmTitle = filmTitle.replace("the", "").replace("The", "").trim();
+//
+//                    filmLabel = DBpediaClient.getMovie(filmTitle, releaseYear, caseSensitive);
+//                    moviesDetails = DBpediaClient.getMoviesDetails(filmLabel/*, caseSensitive*/);
+//                }
+//
+//            }
             ArrayList<Object> actors = moviesDetails.get(0);
             ArrayList<Object> directors = moviesDetails.get(1);
             ArrayList<Object> producers = moviesDetails.get(2);
@@ -189,6 +217,13 @@ public class Mediator {
             String movieTitleFormatted = movie.getTitle().replace(' ', '+');
             String releaseYear = "" + (movie.getReleaseDate().getYear() + 1900) + "";
             String plot = OMDbClient.getMovieResume(movieTitleFormatted, releaseYear);
+            if (plot == null || plot.equals("<html>\n<p></p>\n</html>")){
+                if (movieTitleFormatted.toLowerCase().contains("the")){
+                    movieTitleFormatted = movieTitleFormatted.replace("the", "").replace("The", "").trim();
+                    plot = OMDbClient.getMovieResume(movieTitleFormatted, releaseYear);
+                }
+            }
+
             movie.setSummary(plot);
         }
 

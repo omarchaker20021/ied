@@ -47,14 +47,20 @@ public class FacadeClient{
         tableModel.addColumn("Budget");
         tableModel.addColumn("USA Revenue");
         tableModel.addColumn("Worldwide Revenue");
-        tableModel.addColumn("Director");
-        tableModel.addColumn("Actor");
-        tableModel.addColumn("Producer");
+        tableModel.addColumn("Directors");
+        tableModel.addColumn("Actors");
+        tableModel.addColumn("Producers");
         tableModel.addColumn("Summary");
         JTable resultTable = new JTable(tableModel);
 
         // Définir une hauteur de ligne fixe pour afficher tout le contenu
-        resultTable.setRowHeight(100); // Changer cette valeur selon vos besoins
+        resultTable.setRowHeight(200); // Changer cette valeur selon vos besoins
+
+
+        //
+//        resultTable.getColumn(7).setCellRenderer(new MultiLineTableCellRenderer());
+//        resultTable.getColumn(8).setCellRenderer(new MultiLineTableCellRenderer());
+//        resultTable.getColumn(9).setCellRenderer(new MultiLineTableCellRenderer());
 
         // Utiliser un renderer pour rendre le texte multiligne
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
@@ -79,16 +85,16 @@ public class FacadeClient{
                     tableModel.setRowCount(0); // Clear previous rows
                     for (Movie movie : movies) {
                         Object[] rowData = {
-                                movie.getTitle(),
-                                movie.getReleaseDate(),
-                                movie.getGenre(),
-                                movie.getDistributor(),
-                                movie.getBudget(),
-                                movie.getUsaRevenue(),
-                                movie.getWorldwideRevenue(),
-                                movie.getDirectors(),
-                                movie.getActors(),
-                                movie.getProducers(),
+                                movie.getStringTitle(),
+                                movie.getStringReleaseDate(),
+                                movie.getStringGenre(),
+                                movie.getStringDistributor(),
+                                movie.getStringBudget(),
+                                movie.getStringUsaRevenue(),
+                                movie.getStringWorldwideRevenue(),
+                                movie.getStringHTMLDirectors(),
+                                movie.getStringHTMLActors(),
+                                movie.getStringHTMLProducers(),
                                 movie.getSummary()
                         };
                         tableModel.addRow(rowData);

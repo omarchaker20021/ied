@@ -23,7 +23,7 @@ public class OMDbClient {
 		StringBuilder response = null;
         try {
             // Effectuer la requête HTTP GET vers l'API OMDb
-            URL url = new URL("http://www.omdbapi.com/?t=" + movieTitle + "&y=" + year + "&apikey=" + API_KEY + "&r=xml");
+            URL url = new URL("http://www.omdbapi.com/?t=" + movieTitle + "&y=" + year + "&type=movie&apikey=" + API_KEY + "&r=xml");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -62,6 +62,7 @@ public class OMDbClient {
 	public static String getMovieResume(String movieTitle, String year) {
 		StringBuilder response = getResponse(movieTitle, year);
 		String plot = evaluateXPathExpression(response);
+		plot = "<html>\n<p>" + plot + "</p>\n</html>";
 		return plot;
 	}
 	
