@@ -26,7 +26,11 @@ public class Mediator {
 
     public ArrayList<Movie> getMoviesByMovieTitle(String movieTitle, boolean caseSensitive){
 
+        // Arraylist of movies to return
         ArrayList<Movie> movies = new ArrayList<>();
+
+        // In this part we extract films which corresponds to the movieTitle
+        // and we create objects
         /******************** JDBC Part *****************************************************/
         JDBCClient jdbcClient = new JDBCClient();
 		ArrayList<ArrayList<Object>> filmsTable = jdbcClient.getMovieInfo(movieTitle);
@@ -162,7 +166,11 @@ public class Mediator {
 
         moviesLabels.removeAll(notFoundMoviesLabels);
         // Affichage des labels inexistants dans la bd sql
-        System.out.println("Films de"+ actorName +" non trouvés :\n" + notFoundMoviesLabels);
+        System.out.println("Films de "+ actorName +" non trouvés :\n");
+        for (Object movieObject: notFoundMoviesLabels){
+            String movieLabel = ((String[])movieObject)[0];
+            System.out.println(movieLabel);
+        }
 
         // Pour cette partie je vais extraire l'année de sortie d'un Film avec son nom et les mettre en commun pour la
         // exacte dans SPARQL

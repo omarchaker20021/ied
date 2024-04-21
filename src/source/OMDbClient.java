@@ -32,6 +32,17 @@ public class OMDbClient {
             while ((line = reader.readLine()) != null) {
                 response.append(line);
             }
+			if (response.toString().equals("<root response=\"False\"><error>Movie not found!</error></root>")){
+				url = new URL("http://www.omdbapi.com/?t=" + movieTitle + "&type=movie&apikey=" + API_KEY + "&r=xml");
+				conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod("GET");
+				BufferedReader reader2 = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+				response.delete(0, response.length());
+				while ((line = reader2.readLine()) != null) {
+					response.append(line);
+				}
+			}
+
             reader.close();
         } catch (Exception e) {
             e.printStackTrace();
