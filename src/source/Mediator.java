@@ -14,9 +14,6 @@ public class Mediator {
     // Eager Singleton
     private static Mediator instance = new Mediator();
 
-    private String search;
-
-
     private Mediator(){
     }
 

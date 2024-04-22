@@ -108,9 +108,9 @@ public class DBpediaClient {
                 + "BIND (STR(?producerName) AS ?value)\n"
                 + "}";
 
-        System.out.println(queryStringActors);
-        System.out.println(queryStringDirectors);
-        System.out.println(queryStringProducers);
+//        System.out.println(queryStringActors);
+//        System.out.println(queryStringDirectors);
+//        System.out.println(queryStringProducers);
 
         // Exécuter les requêtes SPARQL et récupérer les résultats
         ArrayList<Object> directors = executeQueryAndGetResults(queryStringDirectors, false);
@@ -156,7 +156,7 @@ public class DBpediaClient {
                 + "  FILTER (lang(?comment) = 'en')\n"
                 + "BIND (STR(?filmLabel) AS ?value)\n"
                 + "}";
-        System.out.println(queryStringActorMovies);
+//        System.out.println(queryStringActorMovies);
         // Exécuter la requête SPARQL et récupérer les résultats
         ArrayList<Object> actorMovies = executeQueryAndGetResults(queryStringActorMovies, true);
         
@@ -200,12 +200,13 @@ public class DBpediaClient {
                 + "}";
 
 
-        System.out.println(queryStringMovie);
+//        System.out.println(queryStringMovie);
 
         HashMap<String, String> movieSummary = new HashMap<>();
 
         // Créer un objet Query
         Query query = QueryFactory.create(queryStringMovie);
+        System.out.println(query);
 
         // Créer un objet QueryExecution pour exécuter la requête SPARQL sur DBpedia
         try (QueryExecution qexec = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", query)) {
@@ -263,7 +264,7 @@ public class DBpediaClient {
 
         // Créer un objet Query
         Query query = QueryFactory.create(queryString);
-
+        System.out.println(query);
         // Créer un objet QueryExecution pour exécuter la requête SPARQL sur DBpedia
         try (QueryExecution qexec = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", query)) {
             // Exécuter la requête et obtenir le ResultSet
