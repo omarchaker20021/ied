@@ -16,9 +16,19 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
+/**
+ * Provides methods to interact with the OMDb API to retrieve movie information.
+ */
 public class OMDbClient {
 	public static final  String API_KEY = "e09f3ff1";
-	
+
+
+	/**
+	 * Sends a HTTP GET request to the OMDb API and retrieves the response.
+	 * @param movieTitle The title of the movie to search for.
+	 * @param year The release year of the movie.
+	 * @return A StringBuilder containing the response from the API.
+	 */
 	private static StringBuilder getResponse(String movieTitle, String year) {
 		StringBuilder response = null;
         try {
@@ -49,6 +59,12 @@ public class OMDbClient {
         }
         return response;
 	}
+
+	/**
+	 * Evaluates an XPath expression on the XML response from the OMDb API to extract the movie plot.
+	 * @param httpResponse The XML response from the OMDb API.
+	 * @return The plot summary of the movie.
+	 */
 	private static String evaluateXPathExpression(StringBuilder httpResponse) {
 		String plot = null;
 		try {
@@ -70,6 +86,13 @@ public class OMDbClient {
 		}
         return plot;   
 	}
+
+	/**
+	 * Retrieves the plot summary of a movie from the OMDb API.
+	 * @param movieTitle The title of the movie to search for.
+	 * @param year The release year of the movie.
+	 * @return The plot summary of the movie in HTML format.
+	 */
 	public static String getMovieResume(String movieTitle, String year) {
 		StringBuilder response = getResponse(movieTitle, year);
 		String plot = evaluateXPathExpression(response);

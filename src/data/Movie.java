@@ -3,6 +3,10 @@ package data;
 import java.sql.Date;
 import java.util.ArrayList;
 
+/**
+ * Represents a movie with details such as title, release date, genre,
+ * distributor, financial data, involved personnel, and a summary.
+ */
 public class Movie {
 
     private String title;
@@ -34,7 +38,10 @@ public class Movie {
         return title;
     }
 
-
+    /**
+     * Gets the movie title formatted in HTML.
+     * @return HTML formatted title.
+     */
     public String getStringTitle(){
         return "<html>\n<p>" + title + "</p>\n</html>";
     }
@@ -46,6 +53,10 @@ public class Movie {
         return releaseDate;
     }
 
+    /**
+     * Gets the release date of the movie formatted in HTML.
+     * @return HTML formatted release date.
+     */
     public String getStringReleaseDate(){
         return "<html>\n<p>" + releaseDate + "</p>\n</html>";
     }
@@ -58,7 +69,10 @@ public class Movie {
         return genre;
     }
 
-
+    /**
+     * Gets the genre of the movie formatted in HTML.
+     * @return HTML formatted genre.
+     */
     public String getStringGenre(){
         return "<html>\n<p>" + genre + "</p>\n</html>";
     }
@@ -70,6 +84,10 @@ public class Movie {
         return distributor;
     }
 
+    /**
+     * Gets the distributor of the movie formatted in HTML.
+     * @return HTML formatted distributor.
+     */
     public String getStringDistributor(){
         return "<html>\n<p>" + distributor + "</p>\n</html>";
     }
@@ -82,6 +100,10 @@ public class Movie {
         return budget;
     }
 
+    /**
+     * Gets the budget of the movie formatted in HTML.
+     * @return HTML formatted budget.
+     */
     public String getStringBudget(){
         return "<html>\n<p>" + String.format("%.0f", budget) + "$</p>\n</html>";
     }
@@ -94,6 +116,10 @@ public class Movie {
         return usaRevenue;
     }
 
+    /**
+     * Gets the USA revenue of the movie formatted in HTML.
+     * @return HTML formatted USA revenue.
+     */
     public String getStringUsaRevenue(){
         return "<html>\n<p>" + String.format("%.0f", usaRevenue) + "$</p>\n</html>";
     }
@@ -106,6 +132,10 @@ public class Movie {
     }
 
 
+    /**
+     * Gets the worldwide revenue of the movie formatted in HTML.
+     * @return HTML formatted worldwide revenue.
+     */
     public String getStringWorldwideRevenue(){
         return "<html>\n<p>" + String.format("%.0f", worldwideRevenue) + "$</p>\n</html>";
     }
@@ -117,6 +147,10 @@ public class Movie {
         return directors;
     }
 
+    /**
+     * Gets the directors of the movie formatted in HTML.
+     * @return HTML formatted list of directors.
+     */
     public String getStringHTMLDirectors(){
         if(!this.directors.isEmpty()){
 
@@ -150,6 +184,10 @@ public class Movie {
         return actors;
     }
 
+    /**
+     * Gets the actors of the movie formatted in HTML.
+     * @return HTML formatted list of actors.
+     */
     public String getStringHTMLActors(){
         if(!this.directors.isEmpty()){
 
@@ -184,7 +222,10 @@ public class Movie {
         return producers;
     }
 
-
+    /**
+     * Gets the producers of the movie formatted in HTML.
+     * @return HTML formatted list of producers.
+     */
     public String getStringHTMLProducers(){
         if(!this.directors.isEmpty()){
 
@@ -254,22 +295,5 @@ public class Movie {
                 String.join(", ", directors), String.join(", ", actors),
                 String.join(", ", producers), summary);
     }
-
-//    @Override
-//    public String toString() {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append(String.format("%-15s: %s\n", "Title", title));
-//        sb.append(String.format("%-15s: %s\n", "Release Date", releaseDate));
-//        sb.append(String.format("%-15s: %s\n", "Genre", genre));
-//        sb.append(String.format("%-15s: %s\n", "Distributor", distributor));
-//        sb.append(String.format("%-15s: $%.2f\n", "Budget", budget));
-//        sb.append(String.format("%-15s: $%.2f\n", "US Revenue", usaRevenue));
-//        sb.append(String.format("%-15s: $%.2f\n", "Worldwide Revenue", worldwideRevenue));
-//        sb.append(String.format("%-15s: %s\n", "Directors", String.join(", ", directors)));
-//        sb.append(String.format("%-15s: %s\n", "Actors", String.join(", ", actors)));
-//        sb.append(String.format("%-15s: %s\n", "Producers", String.join(", ", producers)));
-//        sb.append(String.format("%-15s: %s\n", "Summary", summary));
-//        return sb.toString();
-//    }
 
 }

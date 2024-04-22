@@ -9,8 +9,16 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Provides methods to interact with the DBpedia SPARQL endpoint to retrieve movie details.
+ */
 public class DBpediaClient {
 
+    /**
+     * Retrieves movie details such as actors, directors, and producers based on the movie label.
+     * @param movieLabel The label of the movie to search for.
+     * @return An ArrayList containing ArrayLists of movie details: actors, directors, and producers.
+     */
     public static ArrayList<ArrayList<Object>> getMoviesDetails(String movieLabel/*, boolean caseSensitive*/) {
         ArrayList<ArrayList<Object>> moviesDetails = new ArrayList<>(3);
 
@@ -20,17 +28,8 @@ public class DBpediaClient {
                 + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
                 + "PREFIX dbp: <http://dbpedia.org/property/>\n"
                 + "SELECT DISTINCT ?value WHERE {\n"
-                + "  ?film a dbo:Film ;\n";
-//        if (caseSensitive){
-//            queryStringDirectors +="    rdfs:label ?filmName.\n"
-//                    + "FILTER (LCASE(str(?filmName)) = \"" + movieLabel.toLowerCase() + "\")\n";
-//        }
-//        else {
-//            queryStringDirectors +="    rdfs:label \"" + movieLabel + "\"@en.\n";
-//        }
-
-
-        queryStringDirectors +="{"
+                + "  ?film a dbo:Film ;\n"
+                + "{"
                 + "    ?film rdfs:label \"" + movieLabel + "\"@en.\n"
                 + "} UNION {"
                 + "    ?film rdfs:label \"" + movieLabel + "\"@fr.\n"
@@ -54,15 +53,8 @@ public class DBpediaClient {
                 + "PREFIX dbp: <http://dbpedia.org/property/>\n"
                 + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
                 + "SELECT DISTINCT ?value WHERE {\n"
-                + "  ?film a dbo:Film ;\n";
-//        if (caseSensitive){
-//            queryStringActors +="    rdfs:label ?filmName.\n"
-//                    + "FILTER (LCASE(str(?filmName)) = \"" + movieLabel.toLowerCase() + "\")\n";
-//        }
-//        else {
-//            queryStringActors +="    rdfs:label \"" + movieLabel + "\"@en.\n";
-//        }
-        queryStringActors+= "{"
+                + "  ?film a dbo:Film ;\n"
+                + "{"
                 + "    ?film rdfs:label \"" + movieLabel + "\"@en.\n"
                 + "} UNION {"
                 + "    ?film rdfs:label \"" + movieLabel + "\"@fr.\n"
@@ -85,15 +77,8 @@ public class DBpediaClient {
                 + "PREFIX dbp: <http://dbpedia.org/property/>\n"
                 + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
                 + "SELECT DISTINCT ?value WHERE {\n"
-                + "  ?film a dbo:Film .\n";
-//        if (caseSensitive){
-//            queryStringProducers +="    rdfs:label ?filmName.\n"
-//                    + "FILTER (LCASE(str(?filmName)) = \"" + movieLabel.toLowerCase() + "\")\n";
-//        }
-//        else {
-//            queryStringProducers +="    rdfs:label \"" + movieLabel + "\"@en.\n";
-//        }
-        queryStringProducers+= "{"
+                + "  ?film a dbo:Film .\n"
+                + "{"
                 + "    ?film rdfs:label \"" + movieLabel + "\"@en.\n"
                 + "} UNION {"
                 + "    ?film rdfs:label \"" + movieLabel + "\"@fr.\n"
@@ -119,7 +104,6 @@ public class DBpediaClient {
 
 
 
-
         // Ajouter les détails du film à la liste
         moviesDetails.add(actors);
         moviesDetails.add(directors);
@@ -127,6 +111,14 @@ public class DBpediaClient {
 
         return moviesDetails;
     }
+
+    /**
+     * Retrieves movies associated with a particular actor.
+     * @param actorName The name of the actor to search for.
+     * @param caseSensitive Whether the search should be case-sensitive.
+     * @param year Whether to include the release year of the movies.
+     * @return An ArrayList of movies associated with the specified actor.
+     */
     public static ArrayList<Object> getMoviesByActor(String actorName, boolean caseSensitive, boolean year) {
 
         // Construire la requête SPARQL pour récupérer les films selon l'acteur
@@ -151,19 +143,24 @@ public class DBpediaClient {
 
         queryStringActorMovies += ")\n"
                 + "?film rdfs:label ?filmLabel .\n"
-//				+ "?film foaf:name ?filmTitle .\n"
                 + "  FILTER ((lang(?filmLabel) = 'en') || (lang(?filmLabel) = 'fr'))\n"
                 + "  FILTER (lang(?comment) = 'en')\n"
                 + "BIND (STR(?filmLabel) AS ?value)\n"
                 + "}";
 //        System.out.println(queryStringActorMovies);
         // Exécuter la requête SPARQL et récupérer les résultats
-        ArrayList<Object> actorMovies = executeQueryAndGetResults(queryStringActorMovies, true);
+        ArrayList<Object> actorMovies = executeQueryAndGetResults(queryStringActorMovies, year);
         
         return actorMovies;
     }
 
-
+    /**
+     * Retrieves a movie based on its title and optionally its release year.
+     * @param movieTitle The title of the movie to search for.
+     * @param year The release year of the movie.
+     * @param caseSensitive Whether the search should be case-sensitive.
+     * @return The movie title matching the search criteria.
+     */
     public static String getMovie(String movieTitle, String year, boolean caseSensitive) {
 
         // Requête SPARQL pour récupérer les réalisateurs du film
@@ -176,24 +173,11 @@ public class DBpediaClient {
                 + "    rdfs:label ?label .\n";
 
         if (caseSensitive) {
-            queryStringMovie += /*"    foaf:name ?filmName.\n"
-                    + "FILTER (LCASE(str(?filmName)) = \"" + movieTitle.toLowerCase() + "\")\n"
-                    + */"FILTER (CONTAINS(LCASE(?label), \"" + movieTitle.toLowerCase() + "\"))\n";
+            queryStringMovie +="FILTER (CONTAINS(LCASE(?label), \"" + movieTitle.toLowerCase() + "\"))\n";
 
         } else {
             queryStringMovie += "    foaf:name \"" + movieTitle + "\"@en.\n";
         }
-
-//        if (caseSensitive) {
-//            queryStringMovie += "    rdfs:label ?label.\n"
-////                    + "FILTER (LCASE(str(?filmName)) = \"" + movieTitle.toLowerCase() + "\")\n"
-//                    + "FILTER (CONTAINS(LCASE(?label), \"" + movieTitle.toLowerCase() + "\"))\n";
-//
-//        } else {
-//            queryStringMovie += "    foaf:name \"" + movieTitle + "\"@en.\n";
-//        }
-
-
         queryStringMovie += "    FILTER (lang(?comment) = 'en') \n"
                 + "    FILTER ((lang(?label) = 'en') || (lang(?label) = 'fr')) \n"
                 + "    BIND (STR(?label) AS ?labelValue)\n"
@@ -234,8 +218,6 @@ public class DBpediaClient {
         }
 
         for (Entry<String, String> entry : movieSummary.entrySet()) {
-//            System.out.println(entry);
-
             // Création du motif pour matcher une année
             Pattern pattern = Pattern.compile("\\b\\d{4}\\b");
             Matcher matcher = pattern.matcher(entry.getValue());
@@ -258,7 +240,12 @@ public class DBpediaClient {
         return null;
     }
 
-    // Méthode pour exécuter une requête SPARQL et retourner les résultats sous forme de liste de chaînes de caractères
+    /**
+     * Executes a SPARQL query and returns the results as a list of strings or string arrays.
+     * @param queryString The SPARQL query string to execute.
+     * @param year Whether to include the release year of the movies.
+     * @return An ArrayList containing the results of the SPARQL query.
+     */
     private static ArrayList<Object> executeQueryAndGetResults(String queryString, boolean year) {
         ArrayList<Object> resultsList = new ArrayList<>();
 
@@ -307,11 +294,5 @@ public class DBpediaClient {
 
         return resultsList;
     }
-
-	public static ArrayList<String> getActorMovies(String actorName, boolean caseSensitive) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 }

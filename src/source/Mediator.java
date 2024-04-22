@@ -9,6 +9,10 @@ import java.util.Map.Entry;
 
 import org.apache.jena.rdfxml.xmlinput.ALiteral;
 
+
+/**
+ * Acts as a mediator between different data sources and the application.
+ */
 public class Mediator {
 
     // Eager Singleton
@@ -17,10 +21,22 @@ public class Mediator {
     private Mediator(){
     }
 
+
+    /**
+     * Returns the singleton instance of the Mediator class.
+     * @return The singleton instance of Mediator.
+     */
     public static Mediator getInstance(){
         return instance;
     }
 
+
+    /**
+     * Retrieves movies by their title.
+     * @param movieTitle The title of the movie to search for.
+     * @param caseSensitive Whether the search should be case-sensitive.
+     * @return An ArrayList of Movie objects matching the search criteria.
+     */
     public ArrayList<Movie> getMoviesByMovieTitle(String movieTitle, boolean caseSensitive){
 
         // Arraylist of movies to return
@@ -112,6 +128,14 @@ public class Mediator {
 
         return movies;
     }
+
+
+    /**
+     * Retrieves movies by actor name.
+     * @param actorName The name of the actor to search for.
+     * @param caseSensitive Whether the search should be case-sensitive.
+     * @return An ArrayList of Movie objects featuring the specified actor.
+     */
     public ArrayList<Movie> getMoviesByActorName(String actorName, boolean caseSensitive){
 
         ArrayList<Movie> movies = new ArrayList<Movie>();
