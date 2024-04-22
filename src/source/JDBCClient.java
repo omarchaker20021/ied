@@ -13,10 +13,10 @@ import java.util.regex.Pattern;
 public class JDBCClient {
     private static final String HOST = "127.0.0.1";
     private static final String BASE = "movies_budgets";
-    private static final String USER = "omar";
-//    private static final String USER = "root";
-    private static final String PASSWORD = "Omar2002--";
-//    private static final String PASSWORD = "";
+//    private static final String USER = "omar";
+    private static final String USER = "root";
+ //   private static final String PASSWORD = "Omar2002--";
+    private static final String PASSWORD = "";
 
     private Connection connection;
 

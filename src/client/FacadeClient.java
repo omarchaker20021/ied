@@ -1,8 +1,8 @@
 package client;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,15 +10,11 @@ import java.util.ArrayList;
 import data.Movie;
 import source.Mediator;
 
-public class FacadeClient{
-    private static Mediator mediator = Mediator.getInstance();
+public class FacadeClient {
+    private static final Mediator mediator = Mediator.getInstance();
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
+        SwingUtilities.invokeLater(FacadeClient::createAndShowGUI);
     }
 
     private static void createAndShowGUI() {
@@ -30,41 +26,34 @@ public class FacadeClient{
         frame.add(panel);
 
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel searchLabel = new JLabel("Recherche par:");
+        JLabel searchLabel = new JLabel("Recherche par :");
         JComboBox<String> searchOptions = new JComboBox<>(new String[]{"Titre de film", "Nom d'acteur"});
         JTextField inputField = new JTextField(20);
         JButton searchButton = new JButton("Rechercher");
+        
         searchPanel.add(searchLabel);
         searchPanel.add(searchOptions);
         searchPanel.add(inputField);
         searchPanel.add(searchButton);
 
         DefaultTableModel tableModel = new DefaultTableModel();
-        tableModel.addColumn("Title");
-        tableModel.addColumn("Release Date");
+        tableModel.addColumn("Titre");
+        tableModel.addColumn("Date de sortie");
         tableModel.addColumn("Genre");
-        tableModel.addColumn("Distributor");
+        tableModel.addColumn("Distributeur");
         tableModel.addColumn("Budget");
-        tableModel.addColumn("USA Revenue");
-        tableModel.addColumn("Worldwide Revenue");
-        tableModel.addColumn("Directors");
-        tableModel.addColumn("Actors");
-        tableModel.addColumn("Producers");
-        tableModel.addColumn("Summary");
+        tableModel.addColumn("Revenus USA");
+        tableModel.addColumn("Revenus mondiaux");
+        tableModel.addColumn("Réalisateurs");
+        tableModel.addColumn("Acteurs");
+        tableModel.addColumn("Producteurs");
+        tableModel.addColumn("Résumé");
+
         JTable resultTable = new JTable(tableModel);
+        resultTable.setRowHeight(200); // Ajustez selon vos besoins
 
-        // Définir une hauteur de ligne fixe pour afficher tout le contenu
-        resultTable.setRowHeight(200); // Changer cette valeur selon vos besoins
-
-
-        //
-//        resultTable.getColumn(7).setCellRenderer(new MultiLineTableCellRenderer());
-//        resultTable.getColumn(8).setCellRenderer(new MultiLineTableCellRenderer());
-//        resultTable.getColumn(9).setCellRenderer(new MultiLineTableCellRenderer());
-
-        // Utiliser un renderer pour rendre le texte multiligne
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-        renderer.setVerticalAlignment(SwingConstants.TOP);
+        renderer.setVerticalAlignment(SwingConstants.TOP); // Pour le rendu multiligne
         resultTable.setDefaultRenderer(Object.class, renderer);
 
         JScrollPane scrollPane = new JScrollPane(resultTable);
@@ -73,29 +62,37 @@ public class FacadeClient{
             @Override
             public void actionPerformed(ActionEvent e) {
                 String search = inputField.getText();
+                if (search == null || search.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "Veuillez entrer un terme de recherche.", "Alerte", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
                 boolean caseSensitive = true;
                 ArrayList<Movie> movies = new ArrayList<>();
-                if(search != null && !search.equals("")){
-                    if (searchOptions.getSelectedIndex() == 0) {
-                        movies = mediator.getMoviesByMovieTitle(search, caseSensitive);
-                    } else {
-                        movies = mediator.getMoviesByActorName(search, caseSensitive);
-                    }
+                if (searchOptions.getSelectedIndex() == 0) {
+                    movies = mediator.getMoviesByMovieTitle(search, caseSensitive);
+                } else {
+                    movies = mediator.getMoviesByActorName(search, caseSensitive);
+                }
 
-                    tableModel.setRowCount(0); // Clear previous rows
+                tableModel.setRowCount(0); // Efface les lignes précédentes
+
+                if (movies.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "Aucun résultat trouvé pour \"" + search + "\".", "Information", JOptionPane.INFORMATION_MESSAGE);
+                } else {
                     for (Movie movie : movies) {
                         Object[] rowData = {
-                                movie.getStringTitle(),
-                                movie.getStringReleaseDate(),
-                                movie.getStringGenre(),
-                                movie.getStringDistributor(),
-                                movie.getStringBudget(),
-                                movie.getStringUsaRevenue(),
-                                movie.getStringWorldwideRevenue(),
-                                movie.getStringHTMLDirectors(),
-                                movie.getStringHTMLActors(),
-                                movie.getStringHTMLProducers(),
-                                movie.getSummary()
+                            movie.getStringTitle(),
+                            movie.getStringReleaseDate(),
+                            movie.getStringGenre(),
+                            movie.getStringDistributor(),
+                            movie.getStringBudget(),
+                            movie.getStringUsaRevenue(),
+                            movie.getStringWorldwideRevenue(),
+                            movie.getStringHTMLDirectors(),
+                            movie.getStringHTMLActors(),
+                            movie.getStringHTMLProducers(),
+                            movie.getSummary()
                         };
                         tableModel.addRow(rowData);
                     }
