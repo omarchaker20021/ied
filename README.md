@@ -3,6 +3,7 @@
 ### Date de réalisation : 22/04/2024
 ### Année universitaire : 2023-2024
 ### Établissement : CY Cergy Paris Université
+### Membres du groupe : Lila ROUAS / Omar CHAKER 
 
 - Ceci est un tutoriel d'utilisation du médiateur Java qui combine plusieurs sources (BD MySQL locale, DBpedia, OMDB API) et extrait les informations de films.
 - Ce projet est réalisé dans le cadre du module Intégration et Entrepôts de Données (M1-IISC) encadré par M. Dan Vodislav (dan.vodislav@u-cergy.fr) et M. Clément Agret (clement.agret@u-cergy.fr).
