@@ -23,6 +23,12 @@
 
 ## Configuration de la base de données
 
+Pour intégrer la base de données dans votre environnement vous devrez charger le fichier dump de la BD MySQL utilisée dans ce projet (à savoir "dump_movies_budgets.sql"). Pour cela vous allez:
+  - Créer une base de données MySQL vide (`SQL` : CREATE DATABASE nom_de_la_bd;)
+  - Charger le fichier dump dans la base de données créée (`shell sh`: mysql -u username -p nom_de_la_bd < chemin_vers_le_fichier/dump_movies_budgets.sql)
+  - Ensuite testez si la base de données est bien chargée dans votre environnement (`SQL`: $ SHOW DATABASES;)
+
+
 Pour configurer le projet "Intégration et entrepôts de données", assurez-vous de modifier les paramètres de connexion à la base de données dans les attributs de la classe `JDBCClient.java`. Voici les valeurs à mettre à jour :
 
 - **HOST** : L'adresse IP ou le nom d'hôte du serveur de base de données. Par exemple, "127.0.0.1".
